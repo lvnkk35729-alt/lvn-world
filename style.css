@@ -1,0 +1,448 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #020504;
+    --green: #00ff88;
+    --red: #ff1744;
+    --text: #eafff3;
+    --muted: #789889;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(
+            circle at 15% 15%,
+            rgba(0, 255, 136, 0.10),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 85% 85%,
+            rgba(255, 23, 68, 0.08),
+            transparent 30%
+        ),
+        var(--bg);
+
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
+}
+
+/* Background grid */
+
+.grid {
+    position: fixed;
+    inset: 0;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 255, 136, 0.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0, 255, 136, 0.035) 1px,
+            transparent 1px
+        );
+
+    background-size: 42px 42px;
+
+    pointer-events: none;
+}
+
+
+/* Main card */
+
+.card {
+    width: min(430px, 92%);
+    padding: 40px 30px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(7, 25, 15, 0.94),
+            rgba(2, 8, 5, 0.94)
+        );
+
+    border: 1px solid rgba(0, 255, 136, 0.28);
+    border-radius: 22px;
+
+    box-shadow:
+        0 0 35px rgba(0, 255, 136, 0.10),
+        inset 0 0 30px rgba(0, 255, 136, 0.025);
+
+    backdrop-filter: blur(18px);
+
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* Moving scan line */
+
+.card::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: -100%;
+
+    width: 100%;
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--green),
+            transparent
+        );
+
+    animation: scan 4s linear infinite;
+}
+
+@keyframes scan {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+
+/* Logo */
+
+.logo {
+    color: var(--green);
+
+    font-size: 14px;
+    font-weight: 800;
+
+    letter-spacing: 6px;
+
+    margin-bottom: 25px;
+
+    text-shadow:
+        0 0 8px rgba(0, 255, 136, 0.8),
+        0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+
+/* Headings */
+
+h1 {
+    color: var(--green);
+
+    font-size: 29px;
+
+    margin-bottom: 12px;
+
+    letter-spacing: 2px;
+
+    text-shadow:
+        0 0 8px rgba(0, 255, 136, 0.6),
+        0 0 20px rgba(255, 23, 68, 0.15);
+}
+
+.red {
+    color: var(--red);
+
+    text-shadow:
+        0 0 8px rgba(255, 23, 68, 0.8),
+        0 0 20px rgba(255, 23, 68, 0.3);
+}
+
+p {
+    color: var(--muted);
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    margin-bottom: 25px;
+}
+
+
+/* Inputs */
+
+input {
+    width: 100%;
+    height: 52px;
+
+    margin-bottom: 15px;
+
+    border: 1px solid rgba(0, 255, 136, 0.28);
+    border-radius: 11px;
+
+    background: rgba(0, 0, 0, 0.50);
+
+    color: var(--green);
+
+    text-align: center;
+
+    font-size: 18px;
+    letter-spacing: 4px;
+
+    outline: none;
+
+    transition: 0.3s;
+}
+
+input::placeholder {
+    color: #466454;
+}
+
+input:focus {
+    border-color: var(--green);
+
+    box-shadow:
+        0 0 15px rgba(0, 255, 136, 0.20);
+}
+
+
+/* Buttons */
+
+button {
+    width: 100%;
+    min-height: 52px;
+
+    border: 1px solid rgba(0, 255, 136, 0.40);
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0, 255, 136, 0.07),
+            rgba(255, 23, 68, 0.05)
+        );
+
+    color: var(--green);
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s,
+        background 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0, 255, 136, 0.15),
+            rgba(255, 23, 68, 0.09)
+        );
+
+    box-shadow:
+        0 0 20px rgba(0, 255, 136, 0.20);
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+
+/* Screens */
+
+.screen {
+    display: none;
+
+    min-height: 100vh;
+    width: 100%;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 25px;
+
+    position: relative;
+    z-index: 2;
+}
+
+.screen.active {
+    display: flex;
+
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* Season buttons */
+
+.season {
+    margin: 10px 0;
+}
+
+
+/* Loading */
+
+.loading {
+    text-align: center;
+}
+
+.loader {
+    width: 90px;
+    height: 90px;
+
+    margin: 0 auto 25px;
+
+    border-radius: 50%;
+
+    border: 3px solid rgba(0, 255, 136, 0.10);
+
+    border-top-color: var(--green);
+    border-right-color: var(--red);
+
+    box-shadow:
+        0 0 25px rgba(0, 255, 136, 0.20);
+
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* Progress */
+
+.progress {
+    width: 100%;
+    height: 5px;
+
+    margin-top: 20px;
+
+    background: rgba(255, 255, 255, 0.07);
+
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+.bar {
+    width: 0%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--red),
+            var(--green)
+        );
+
+    box-shadow:
+        0 0 12px var(--green);
+}
+
+
+/* Error */
+
+.error {
+    min-height: 18px;
+
+    margin-top: 12px;
+
+    color: var(--red);
+
+    font-size: 12px;
+
+    text-shadow:
+        0 0 8px rgba(255, 23, 68, 0.7);
+}
+
+
+/* Generator output */
+
+.tools {
+    display: grid;
+    gap: 18px;
+}
+
+.tools h3 {
+    color: var(--green);
+
+    font-size: 17px;
+
+    margin-bottom: 10px;
+}
+
+.output {
+    min-height: 52px;
+
+    margin: 12px 0;
+
+    padding: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px dashed rgba(0, 255, 136, 0.28);
+
+    border-radius: 10px;
+
+    background: rgba(0, 0, 0, 0.40);
+
+    color: var(--green);
+
+    font-family: monospace;
+
+    font-size: 13px;
+
+    word-break: break-all;
+
+    text-shadow:
+        0 0 8px rgba(0, 255, 136, 0.4);
+}
+
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+    .card {
+        padding: 32px 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .logo {
+        letter-spacing: 4px;
+    }
+  }

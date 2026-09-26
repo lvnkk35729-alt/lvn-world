@@ -1,1 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>LVN World</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(circle at top left, #063d25, transparent 35%),
+                radial-gradient(circle at bottom right, #3d0714, transparent 35%),
+                #020504;
+            color: #00ff88;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0,255,136,.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,136,.035) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        .card {
+            width: min(430px, 90%);
+            padding: 40px 30px;
+            text-align: center;
+            background: rgba(3, 15, 9, .88);
+            border: 1px solid rgba(0,255,136,.3);
+            border-radius: 22px;
+            box-shadow:
+                0 0 35px rgba(0,255,136,.12),
+                0 0 60px rgba(255,0,50,.05);
+            backdrop-filter: blur(15px);
+        }
+
+        .logo {
+            font-size: 14px;
+            letter-spacing: 6px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 12px #00ff88;
+        }
+
+        h1 {
+            color: #00ff88;
+            margin-bottom: 12px;
+            text-shadow:
+                0 0 8px #00ff88,
+                0 0 18px rgba(255,0,60,.3);
+        }
+
+        .red {
+            color: #ff1744;
+            text-shadow: 0 0 10px #ff1744;
+        }
+
+        p {
+            color: #769787;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            height: 52px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(0,255,136,.3);
+            border-radius: 10px;
+            background: rgba(0,0,0,.5);
+            color: #00ff88;
+            text-align: center;
+            font-size: 18px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #00ff88;
+            box-shadow: 0 0 15px rgba(0,255,136,.2);
+        }
+
+        button {
+            width: 100%;
+            min-height: 52px;
+            border: 1px solid rgba(0,255,136,.45);
+            border-radius: 10px;
+            background: rgba(0,255,136,.06);
+            color: #00ff88;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0,255,136,.2);
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .screen.active {
+            display: flex;
+            animation: fade .5s ease;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: scale(.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .season {
+            margin: 10px 0;
+        }
+
+        .loading {
+            text-align: center;
+        }
+
+        .loader {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            border: 3px solid rgba(0,255,136,.1);
+            border-top-color: #00ff88;
+            border-right-color: #ff1744;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 25px rgba(0,255,136,.2);
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .progress {
+            width: 100%;
+            height: 5px;
+            margin-top: 20px;
+            background: rgba(255,255,255,.08);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff1744, #00ff88);
+            box-shadow: 0 0 12px #00ff88;
+        }
+
+        .tools {
+            display: grid;
+            gap: 15px;
+        }
+
+        .output {
+            margin: 15px 0;
+            min-height: 50px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed rgba(0,255,136,.3);
+            border-radius: 10px;
+            background: rgba(0,0,0,.4);
+            color: #00ff88;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .error {
+            color: #ff1744;
+            font-size: 12px;
+            margin-top: 12px;
+        }
+
+        @media(max-width:600px) {
+            .card {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="grid"></div>
+
+<!-- SCREEN 1 -->
+<div id="screen1" class="screen active">
+    <div class="card">
+
+        <div class="logo">LVN_WORLD</div>
+
+        <h1>IP_ACCESS</h1>
+
+        <p>Enter demo access identifier</p>
+
+        <input
+            id="username"
+            maxlength="2"
+            placeholder="01"
+        >
+
+        <button onclick="login()">LOGIN</button>
+
+        <div id="loginError" class="error"></div>
+
+    </div>
+</div>
+
+
+<!-- SCREEN 2 -->
+<div id="screen2" class="screen">
+    <div class="card">
+
+        <div class="logo">LVN_WORLD</div>
+
+        <h1>SELECT <span class="red">SEASON</span></h1>
+
+        <p>Select a demo season</p>
+
+        <div class="season">
+            <button onclick="selectSeason('Green Code 1')">
+                GREEN CODE 1
+            </button>
+        </div>
+
+        <div class="season">
+            <button onclick="selectSeason('Green Code 5')">
+                GREEN CODE 5
+            </button>
+        </div>
+
+        <div class="season">
+            <button onclick="selectSeason('PY')">
+                PY
+            </button>
+        </div>
+
+        <div id="seasonStatus" class="error"></div>
+
+    </div>
+</div>
+
+
+<!-- SCREEN 3 -->
+<div id="screen3" class="screen">
+    <div class="card loading">
+
+        <div class="loader"></div>
+
+        <h1>LOADING</h1>
+
+        <p id="loadingText">
+            Initializing demo interface...
+        </p>
+
+        <div class="progress">
+            <div id="bar" class="bar"></div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- SCREEN 4 -->
+<div id="screen4" class="screen">
+    <div class="card">
+
+        <div class="logo">LVN_WORLD</div>
+
+        <h1>IP ACCESS CODE</h1>
+
+        <p>Enter demo access code</p>
+
+        <input
+            id="accessCode"
+            maxlength="3"
+            placeholder="005"
+        >
+
+        <button onclick="checkCode()">CONTINUE</button>
+
+        <div id="codeError" class="error"></div>
+
+    </div>
+</div>
+
+
+<!-- SCREEN 5 -->
+<div id="screen5" class="screen">
+    <div class="card">
+
+        <div class="logo">LVN_WORLD</div>
+
+        <h1>
+            Welcome to
+            <span class="red">LVN World</span>
+        </h1>
+
+        <p>Demo generator interface</p>
+
+        <div class="tools">
+
+            <div>
+                <h3>Duplicate Emails</h3>
+
+                <div id="emailOutput" class="output">
+                    Click Generate
+                </div>
+
+                <button onclick="generateEmail()">
+                    GENERATE EMAIL
+                </button>
+            </div>
+
+            <div>
+                <h3>Duplicate Passwords</h3>
+
+                <div id="passwordOutput" class="output">
+                    Click Generate
+                </div>
+
+                <button onclick="generatePassword()">
+                    GENERATE PASSWORD
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+
+    function showScreen(number) {
+
+        document.querySelectorAll(".screen")
+            .forEach(screen => {
+                screen.classList.remove("active");
+            });
+
+        document
+            .getElementById("screen" + number)
+            .classList.add("active");
+    }
+
+
+    function login() {
+
+        const username =
+            document.getElementById("username").value.trim();
+
+        if (username === "01") {
+
+            document.getElementById("loginError")
+                .textContent = "";
+
+            showScreen(2);
+
+        } else {
+
+            document.getElementById("loginError")
+                .textContent =
+                "Demo identifier is 01.";
+
+        }
+    }
+
+
+    function selectSeason(season) {
+
+        document.getElementById("seasonStatus")
+            .textContent =
+            "Selected: " + season;
+
+        setTimeout(startLoading, 500);
+    }
+
+
+    function startLoading() {
+
+        showScreen(3);
+
+        let progress = 0;
+
+        const bar =
+            document.getElementById("bar");
+
+        const text =
+            document.getElementById("loadingText");
+
+        const messages = [
+            "Initializing demo interface...",
+            "Loading interface modules...",
+            "Preparing LVN World...",
+            "Finalizing..."
+        ];
+
+        const timer = setInterval(() => {
+
+            progress++;
+
+            bar.style.width = progress + "%";
+
+            if (progress === 25) {
+                text.textContent = messages[1];
+            }
+
+            if (progress === 50) {
+                text.textContent = messages[2];
+            }
+
+            if (progress === 80) {
+                text.textContent = messages[3];
+            }
+
+            if (progress >= 100) {
+
+                clearInterval(timer);
+
+                setTimeout(() => {
+                    showScreen(4);
+                }, 500);
+            }
+
+        }, 30);
+    }
+
+
+    function checkCode() {
+
+        const code =
+            document.getElementById("accessCode")
+                .value.trim();
+
+        if (code === "005") {
+
+            document.getElementById("codeError")
+                .textContent = "";
+
+            showScreen(5);
+
+        } else {
+
+            document.getElementById("codeError")
+                .textContent =
+                "Demo access code is 005.";
+
+        }
+    }
+
+
+    function randomString(length) {
+
+        const chars =
+            "abcdefghijklmnopqrstuvwxyz0123456789";
+
+        let result = "";
+
+        for (let i = 0; i < length; i++) {
+
+            result +=
+                chars[Math.floor(
+                    Math.random() * chars.length
+                )];
+        }
+
+        return result;
+    }
+
+
+    function generateEmail() {
+
+        const email =
+            randomString(8) +
+            Math.floor(Math.random() * 9000 + 1000) +
+            "@lvn.world";
+
+        document.getElementById("emailOutput")
+            .textContent = email;
+    }
+
+
+    function generatePassword() {
+
+        const chars =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+            "abcdefghijklmnopqrstuvwxyz" +
+            "0123456789!#$%&*";
+
+        let password = "";
+
+        for (let i = 0; i < 10; i++) {
+
+            password +=
+                chars[Math.floor(
+                    Math.random() * chars.length
+                )];
+        }
+
+        password += "@lvn.world";
+
+        document.getElementById("passwordOutput")
+            .textContent = password;
+    }
+
+</script>
+
+</body>
+  </html>
